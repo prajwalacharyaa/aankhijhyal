@@ -1,11 +1,41 @@
-// ignore_for_file: avoid_print
-
+import 'dart:convert';
 import 'package:aankhijhyal/models/weather_model.dart';
-import 'package:aankhijhyal/services/weather_service.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 
+class WeatherService {
+  static const String BASE_URL = 'https://api.openweathermap.org/data/2.5';
+  final String apiKey;
+
+  WeatherService(this.apiKey);
+
+  Future<Weather> getWeather(double latitude, double longitude) async {
+    final response = await http.get(Uri.parse(
+        '$BASE_URL/weather?lat=$latitude&lon=$longitude&appid=$apiKey&units=metric'));
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      return Weather.fromJson(jsonData);
+    } else {
+      throw Exception('Failed to load weather data');
+    }
+  }
+
+  Future<Weather> getWeatherByLocation(String location) async {
+    final response = await http.get(Uri.parse(
+        '$BASE_URL/weather?q=$location&appid=$apiKey&units=metric'));
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      return Weather.fromJson(jsonData);
+    } else {
+      throw Exception('Failed to load weather data');
+    }
+  }
+}
 
 class WeatherPage extends StatefulWidget {
   const WeatherPage({Key? key}) : super(key: key);
@@ -17,75 +47,89 @@ class WeatherPage extends StatefulWidget {
 class _MyWidgetState extends State<WeatherPage> {
   final _weatherService = WeatherService('ebc4d8573cdb452a420c626b5f529bec');
   Weather? _weather;
-  //for forecasting 7 days
- // List<Weather>? _forecast;
   final bool _isScrolled = false;
+  String? _chosenLocation;
 
-  // Fetch weather and forecast for Kathmandu, Nepal
+  _chooseLocation() async {
+    final chosenLocation = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(builder: (context) => LocationSelectionPage()),
+    );
+
+    if (chosenLocation != null) {
+      setState(() {
+        _chosenLocation = chosenLocation;
+      });
+      _fetchWeather();
+    }
+  }
+
   _fetchWeather() async {
     try {
-      double kathmanduLatitude = 27.726877;
-      double kathmanduLongitude = 85.405415;
-
-      final weather = await _weatherService.getWeather(
-          kathmanduLatitude, kathmanduLongitude);
-     // final forecast = await _weatherService.getForecast(
-     //     kathmanduLatitude, kathmanduLongitude);
+      final location = _chosenLocation ?? 'Kathmandu';
+      final weather = await _weatherService.getWeatherByLocation(location);
 
       setState(() {
         _weather = weather;
-      //  _forecast = forecast;
       });
     } catch (e) {
       print('Error fetching weather forecast: $e');
     }
   }
-// Define a method to get the current Nepali date and time
-String getCurrentNepaliDateTime() {
-  NepaliDateTime dateTime = NepaliDateTime.now();
-  NepaliDateFormat dateFormat = NepaliDateFormat('EEEE, MMMM d, yyyy, hh:mm a');
-  return dateFormat.format(dateTime);
-}
-  // Weather animations
+
+  String getCurrentNepaliDateTime() {
+    NepaliDateTime dateTime = NepaliDateTime.now();
+    NepaliDateFormat dateFormat = NepaliDateFormat('yyyy-MM-dd HH:mm:ss');
+    String nepaliDateString = dateFormat.format(dateTime);
+
+    NepaliDateTime convertedDate = NepaliDateTime.parse(nepaliDateString);
+
+    NepaliDateFormat displayFormat = NepaliDateFormat('EEE, MMMM d, yyyy G.');
+
+    String formattedDate = displayFormat.format(convertedDate);
+
+    return formattedDate;
+  }
+
   String getWeatherAnimation(String? mainCondition, bool isNightTime) {
     if (mainCondition == null) return 'assets/sunny.json';
     if (isNightTime) {
       switch (mainCondition.toLowerCase()) {
         case 'clouds':
-          return 'assets/cloudnight.json'; // Use night clouds animation for clouds at night
+          return 'assets/cloudnight.json';
         case 'rain':
-          return 'assets/nightrain.json'; // Use night rain animation for rain at night
+          return 'assets/nightrain.json';
         case 'clear':
-          return 'assets/clearnight.json'; // Use night clear animation for clear skies at night
+          return 'assets/clearnight.json';
         case 'thunderstorm':
-          return 'assets/thunderstorm.json'; // Use night thunderstorm animation for thunderstorm at night
+          return 'assets/thunderstorm.json';
         case 'drizzle':
-          return 'assets/nightrain.json'; // Use night rain animation for drizzle at night
+          return 'assets/nightrain.json';
         case 'snow':
-          return 'assets/snow.json'; // Use night snow animation for snow at night
+          return 'assets/snow.json';
         case 'mist':
-          return 'assets/mist.json'; // Use night mist animation for mist at night
+          return 'assets/mist.json';
         default:
-          return 'assets/clearnight.json'; // Use night clear animation as default at night
+          return 'assets/clearnight.json';
       }
     } else {
       switch (mainCondition.toLowerCase()) {
         case 'clouds':
-          return 'assets/clouds.json'; // Use day clouds animation for clouds during the day
+          return 'assets/clouds.json';
         case 'rain':
-          return 'assets/rain.json'; // Use day rain animation for rain during the day
+          return 'assets/rain.json';
         case 'clear':
-          return 'assets/sunny.json'; // Use day clear animation for clear skies during the day
+          return 'assets/sunny.json';
         case 'thunderstorm':
-          return 'assets/thunderstorm.json'; // Use day thunderstorm animation for thunderstorm during the day
+          return 'assets/thunderstorm.json';
         case 'drizzle':
-          return 'assets/rain.json'; // Use day rain animation for drizzle during the day
+          return 'assets/rain.json';
         case 'snow':
-          return 'assets/snow.json'; // Use day snow animation for snow during the day
+          return 'assets/snow.json';
         case 'mist':
-          return 'assets/mist.json'; // Use day mist animation for mist during the day
+          return 'assets/mist.json';
         default:
-          return 'assets/sunny.json'; // Use day sunny animation as default during the day
+          return 'assets/sunny.json';
       }
     }
   }
@@ -103,7 +147,7 @@ String getCurrentNepaliDateTime() {
   @override
   void initState() {
     super.initState();
-    _fetchWeather(); // Fetch weather on widget startup
+    _fetchWeather();
   }
 
   @override
@@ -117,13 +161,31 @@ String getCurrentNepaliDateTime() {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                _weather?.cityName ?? "Loading city...",
-                style: TextStyle(
-                  color: _isScrolled ? Colors.black : const Color(0xFF00A1F2),
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: _chooseLocation,
+                    child: Text(
+                      _weather?.cityName ?? "Loading city...",
+                      style: TextStyle(
+                        color: _isScrolled ? Colors.black : const Color(0xFF00A1F2),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 3),
+                  GestureDetector(
+                    onTap: _chooseLocation,
+                    child: SvgPicture.asset(
+                      'assets/images/location.svg',
+                      width: 24,
+                      height: 24,
+                      color: const Color(0xFF00A1F2),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -144,14 +206,11 @@ String getCurrentNepaliDateTime() {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    // Animation
                     Lottie.asset(
                       getWeatherAnimation(
                           _weather?.weatherCondition, _isNightTime()),
                     ),
                     const SizedBox(height: 0),
-
-                    // Temperature
                     Text(
                       '${_weather?.temperature?.toStringAsFixed(0) ?? ""}°C',
                       style: const TextStyle(
@@ -160,8 +219,6 @@ String getCurrentNepaliDateTime() {
                       ),
                     ),
                     const SizedBox(height: 4),
-
-                    // Weather condition
                     Text(
                       _weather?.weatherCondition ?? "",
                       style: const TextStyle(fontSize: 16),
@@ -169,44 +226,15 @@ String getCurrentNepaliDateTime() {
                   ],
                 ),
               ),
-// In your build method, use the method to display the Nepali date and time
-Column(
-  children: [
-    // Other weather information widgets...
-    const SizedBox(height: 16),
-    Text(
-      getCurrentNepaliDateTime(),
-      style: TextStyle(fontSize: 16),
-    ),
-  ],
-),
-              // Forecast
-              // if (_forecast != null)
-              //   ListView.builder(
-              //     itemCount: _forecast!.length,
-              //     shrinkWrap: true,
-              //     physics: const NeverScrollableScrollPhysics(),
-              //     itemBuilder: (context, index) {
-              //       final weather = _forecast![index];
-              //       final dateTime = DateTime.fromMillisecondsSinceEpoch(
-              //           weather.dateTime! *
-              //               1000); // Convert seconds to milliseconds
-              //       final dayOfWeek = DateFormat('EEEE').format(dateTime);
-              //       return ListTile(
-              //         title: Text(dayOfWeek),
-              //         subtitle: Text(weather.weatherCondition),
-              //         trailing: Text(
-              //             '${weather.temperature?.toStringAsFixed(0) ?? ""}°C'),
-              //       );
-              //     },
-              //   )
-              // else
-              //   const SizedBox(
-              //     height: 200,
-              //     child: Center(
-              //       child: CircularProgressIndicator(),
-              //     ),
-              //   ),
+              Column(
+                children: [
+                  const SizedBox(height: 16),
+                  Text(
+                    getCurrentNepaliDateTime(),
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -221,7 +249,57 @@ Column(
     int currentTime = DateTime.now().millisecondsSinceEpoch ~/
         1000; // Get current time in seconds
     return currentTime < sunrise ||
-        currentTime >
-            sunset; // It's night time if current time is before sunrise or after sunset
+        currentTime > sunset;
   }
+}
+
+class LocationSelectionPage extends StatefulWidget {
+  @override
+  _LocationSelectionPageState createState() => _LocationSelectionPageState();
+}
+
+class _LocationSelectionPageState extends State<LocationSelectionPage> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Choose Location')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _controller,
+              decoration: InputDecoration(labelText: 'Enter a location'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context, _controller.text);
+              },
+              child: Text('Select Location'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: WeatherPage(),
+  ));
 }

@@ -62,7 +62,20 @@ class WeatherService {
       throw Exception('Failed to load weather data');
     }
   }
-  
+
+  Future<Weather> getWeatherByLocation(String location) async {
+    final response = await http.get(Uri.parse(
+        '$BASE_URL/weather?q=$location&appid=$apiKey&units=metric'));
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      return Weather.fromJson(jsonData);
+    } else {
+      throw Exception('Failed to load weather data');
+    }
+  }
+}
+
 //for daily forecasts
   // Future<List<Weather>> getForecast(double latitude, double longitude) async {
   //   final response = await http.get(Uri.parse(
@@ -78,4 +91,3 @@ class WeatherService {
   //     throw Exception('Failed to load forecast data');
   //   }
   // }
-}
