@@ -1,12 +1,16 @@
 import 'dart:convert';
+import 'package:aankhijhyal/User/user_profile.dart';
+import 'package:aankhijhyal/location_search.dart';
 import 'package:aankhijhyal/models/weather_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nepali_utils/nepali_utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WeatherService {
+  // ignore: constant_identifier_names
   static const String BASE_URL = 'https://api.openweathermap.org/data/2.5';
   final String apiKey;
 
@@ -25,8 +29,8 @@ class WeatherService {
   }
 
   Future<Weather> getWeatherByLocation(String location) async {
-    final response = await http.get(Uri.parse(
-        '$BASE_URL/weather?q=$location&appid=$apiKey&units=metric'));
+    final response = await http.get(
+        Uri.parse('$BASE_URL/weather?q=$location&appid=$apiKey&units=metric'));
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
@@ -53,10 +57,31 @@ class _MyWidgetState extends State<WeatherPage> {
   _chooseLocation() async {
     final chosenLocation = await Navigator.push<String>(
       context,
-      MaterialPageRoute(builder: (context) => LocationSelectionPage()),
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const LocationSelectionPage(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var begin = const Offset(-1.0, 0.0); // Change begin offset to -1.0
+          var end = Offset.zero;
+          var curve = Curves.ease;
+
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+      ),
     );
 
     if (chosenLocation != null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('chosen_location', chosenLocation);
+
       setState(() {
         _chosenLocation = chosenLocation;
       });
@@ -66,7 +91,19 @@ class _MyWidgetState extends State<WeatherPage> {
 
   _fetchWeather() async {
     try {
-      final location = _chosenLocation ?? 'Kathmandu';
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? savedLocation = prefs.getString('chosen_location');
+
+      final location = _chosenLocation ?? savedLocation ?? 'Kathmandu';
+
+      // If _chosenLocation is null and savedLocation is also null, then set _chosenLocation to 'Kathmandu'
+      if (_chosenLocation == null && savedLocation == null) {
+        setState(() {
+          _chosenLocation = 'Kathmandu';
+        });
+        await prefs.setString('chosen_location', 'Kathmandu');
+      }
+
       final weather = await _weatherService.getWeatherByLocation(location);
 
       setState(() {
@@ -136,6 +173,7 @@ class _MyWidgetState extends State<WeatherPage> {
 
   Future<void> _refreshWeather() async {
     await _fetchWeather();
+    // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Weather refreshed'),
@@ -147,7 +185,18 @@ class _MyWidgetState extends State<WeatherPage> {
   @override
   void initState() {
     super.initState();
+    _loadSelectedLocation();
     _fetchWeather();
+  }
+
+  _loadSelectedLocation() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedLocation = prefs.getString('chosen_location');
+    if (savedLocation != null) {
+      setState(() {
+        _chosenLocation = savedLocation;
+      });
+    }
   }
 
   @override
@@ -156,39 +205,60 @@ class _MyWidgetState extends State<WeatherPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: _chooseLocation,
-                    child: Text(
-                      _weather?.cityName ?? "Loading city...",
-                      style: TextStyle(
-                        color: _isScrolled ? Colors.black : const Color(0xFF00A1F2),
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+        flexibleSpace: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 18),
+            Row(
+              mainAxisAlignment: MainAxisAlignment
+                  .spaceBetween, // Align items to the start and end
+              children: [
+                const SizedBox(width: 15),
+                InkWell(
+                  onTap: _chooseLocation,
+                  child: SvgPicture.asset(
+                    'assets/images/location.svg',
+                    width: 24,
+                    height: 24,
+                    color: const Color(0xFF00A1F2),
+                  ),
+                ),
+                const SizedBox(width: 15),
+                Expanded(
+                  child: Center(
+                    child: GestureDetector(
+                      onTap: _chooseLocation,
+                      child: Text(
+                        _weather?.cityName ?? "Loading city...",
+                        style: TextStyle(
+                          color: _isScrolled
+                              ? Colors.black
+                              : const Color(0xFF00A1F2),
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 3),
-                  GestureDetector(
-                    onTap: _chooseLocation,
-                    child: SvgPicture.asset(
-                      'assets/images/location.svg',
-                      width: 24,
-                      height: 24,
-                      color: const Color(0xFF00A1F2),
-                    ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const UserProfile(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.account_circle_outlined,
+                    color: Color(0xFF00A1F2),
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+                const SizedBox(width: 0),
+              ],
+            ),
+          ],
         ),
       ),
       body: RefreshIndicator(
@@ -212,23 +282,22 @@ class _MyWidgetState extends State<WeatherPage> {
                     ),
                     const SizedBox(height: 0),
                     Text(
+                      'feeling ${(_weather?.weatherCondition ?? "")}',
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    Text(
                       '${_weather?.temperature?.toStringAsFixed(0) ?? ""}°C',
                       style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 76,
+                        // fontWeight: FontWeight.bold,
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      _weather?.weatherCondition ?? "",
-                      style: const TextStyle(fontSize: 16),
                     ),
                   ],
                 ),
               ),
               Column(
                 children: [
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 0),
                   Text(
                     getCurrentNepaliDateTime(),
                     style: const TextStyle(fontSize: 16),
@@ -248,58 +317,12 @@ class _MyWidgetState extends State<WeatherPage> {
     int sunset = _weather!.sunset ?? 0;
     int currentTime = DateTime.now().millisecondsSinceEpoch ~/
         1000; // Get current time in seconds
-    return currentTime < sunrise ||
-        currentTime > sunset;
-  }
-}
-
-class LocationSelectionPage extends StatefulWidget {
-  @override
-  _LocationSelectionPageState createState() => _LocationSelectionPageState();
-}
-
-class _LocationSelectionPageState extends State<LocationSelectionPage> {
-  late TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Choose Location')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _controller,
-              decoration: InputDecoration(labelText: 'Enter a location'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context, _controller.text);
-              },
-              child: Text('Select Location'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+    return currentTime < sunrise || currentTime > sunset;
   }
 }
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: WeatherPage(),
   ));
 }

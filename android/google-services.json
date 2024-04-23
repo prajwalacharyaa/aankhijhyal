@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "13441199608",
+    "project_id": "aankhijhyalweather",
+    "storage_bucket": "aankhijhyalweather.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:13441199608:android:f27bccf4f41acecfc3ba0d",
+        "android_client_info": {
+          "package_name": "com.flutterapp.aankhijhyal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "13441199608-j8tl2u0gir1hht92h0ito4tojqin3879.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwjBVRdYG3Wdud03D4LbnYUvPvCUs_lAA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "13441199608-j8tl2u0gir1hht92h0ito4tojqin3879.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

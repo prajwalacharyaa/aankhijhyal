@@ -42,7 +42,10 @@ dependencies:
   lottie: ^3.0.0
   nepali_utils: ^3.0.4
   flutter_svg: ^2.0.9
-  google_maps_flutter: ^2.2.8
+  shared_preferences: ^2.2.3
+  firebase_core: ^2.27.0
+  firebase_auth: ^4.17.8
+  google_sign_in: ^6.2.1
 
 dev_dependencies:
   flutter_test:
