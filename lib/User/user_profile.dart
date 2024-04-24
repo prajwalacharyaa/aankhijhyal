@@ -1,72 +1,95 @@
 import 'package:flutter/material.dart';
-import 'user_authentication.dart'; // Import the UserAuthentication page
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserProfile extends StatelessWidget {
   const UserProfile({Key? key}) : super(key: key);
 
+  Future<void> _signOut(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pop(context); // Navigate back to the previous page
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'User Profile',
-          style: TextStyle(
-            color: Color(0xFF00A1F2),
-          ),
-        ),
-        centerTitle: true, // Center the title
-        automaticallyImplyLeading: false, // Remove default back button
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Navigator.pop(context); // Navigate back when wrong icon is tapped
-            },
-            child: Container(
-              padding: const EdgeInsets.all(0),
-              child: const Icon(
-                Icons.close,
-                color: Color(0xFF00A1F2),
-                size: 30, // Increase the icon size
+    return FutureBuilder<User?>(
+      future: FirebaseAuth.instance.authStateChanges().first,
+      builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          if (snapshot.hasData && snapshot.data != null) {
+            final User user = snapshot.data!;
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text(
+                  'User Profile',
+                  style: TextStyle(
+                    color: Color(0xFF00A1F2),
+                  ),
+                ),
+                centerTitle: true,
+                automaticallyImplyLeading: false,
+                actions: [
+                  GestureDetector(
+                    onTap: () => _signOut(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(0),
+                      child: const Icon(
+                        Icons.close,
+                        color: Color(0xFF00A1F2),
+                        size: 30,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                ],
               ),
-            ),
-          ),
-          SizedBox(width: 10),
-        ],
-      ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage(
-                  'https://example.com/image.jpg'), // Add a network image for the user avatar
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Username', // Display the username here
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Email Address', // Display the email address here
-              style: TextStyle(fontSize: 18),
-            ),
-          ],
-        ),
-      ),
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(
+                          user.photoURL ?? 'https://wallpapers.com/images/featured/naruto-profile-pictures-sa1tekghfajrr928.webp'),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      user.displayName ?? 'Username',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      user.email ?? 'Email Address',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            // User is not signed in, navigate to authentication page
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const UserAuthentication(),
+              ),
+            );
+            return const SizedBox(); // Placeholder until navigation completes
+          }
+        }
+      },
     );
   }
 }
 
-void main() {
-  runApp(MaterialApp(
-    home: const UserProfile(),
-  ));
-}
-
 class UserAuthentication extends StatelessWidget {
   const UserAuthentication({Key? key}) : super(key: key);
+
+  // Implement the sign-in with Google logic here
 
   @override
   Widget build(BuildContext context) {
@@ -77,12 +100,17 @@ class UserAuthentication extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            // Perform authentication logic here
-            // For example, sign in with Google
+            // Implement the sign-in with Google logic
           },
-          child: const Text('Sign In with Google'),
+          child: const Text('Sign in with Google'),
         ),
       ),
     );
   }
+}
+
+void main() {
+  runApp(const MaterialApp(
+    home: UserProfile(),
+  ));
 }

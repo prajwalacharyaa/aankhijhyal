@@ -22,10 +22,14 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+
 android {
     namespace "com.example.aankhijhyal"
-    compileSdkVersion flutter.compileSdkVersion
-    flutter.compileSdkVersion = 34
+    compileSdkVersion 34
+    // compileSdkVersion flutter.compileSdkVersion
+    // flutter.compileSdkVersion = 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -65,4 +69,7 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    implementation platform('com.google.firebase:firebase-bom:32.8.1')
+    implementation 'com.google.firebase:firebase-analytics'
+}

@@ -72,7 +72,7 @@ class _LocationSelectionPageState extends State<LocationSelectionPage> {
                 primary: const Color(0xFF00A1F2),
                 onPrimary: Colors.white,
               ),
-              child: const Text('Select Location'),
+              child: const Text('Select'),
             ),
           ],
         ),

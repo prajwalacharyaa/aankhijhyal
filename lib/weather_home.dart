@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:aankhijhyal/User/user_profile.dart';
+import 'package:aankhijhyal/User/user_authentication.dart';
 import 'package:aankhijhyal/location_search.dart';
 import 'package:aankhijhyal/models/weather_model.dart';
 import 'package:http/http.dart' as http;
@@ -210,8 +210,7 @@ class _MyWidgetState extends State<WeatherPage> {
           children: [
             const SizedBox(height: 18),
             Row(
-              mainAxisAlignment: MainAxisAlignment
-                  .spaceBetween, // Align items to the start and end
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const SizedBox(width: 15),
                 InkWell(
@@ -242,11 +241,11 @@ class _MyWidgetState extends State<WeatherPage> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () {
+                  onPressed: () async {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const UserProfile(),
+                        builder: (context) =>  UserAuthentication(),
                       ),
                     );
                   },
@@ -255,7 +254,7 @@ class _MyWidgetState extends State<WeatherPage> {
                     color: Color(0xFF00A1F2),
                   ),
                 ),
-                const SizedBox(width: 0),
+                const SizedBox(width: 15),
               ],
             ),
           ],
