@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:aankhijhyal/User/user_authentication.dart';
+import 'package:aankhijhyal/User/user_profile.dart';
 import 'package:aankhijhyal/location_search.dart';
 import 'package:aankhijhyal/models/weather_model.dart';
 import 'package:http/http.dart' as http;
@@ -39,6 +39,7 @@ class WeatherService {
       throw Exception('Failed to load weather data');
     }
   }
+  
 }
 
 class WeatherPage extends StatefulWidget {
@@ -53,6 +54,10 @@ class _MyWidgetState extends State<WeatherPage> {
   Weather? _weather;
   final bool _isScrolled = false;
   String? _chosenLocation;
+  DateTime? _lastRefreshTime; // Track the last refresh time
+  bool _isRefreshing = false;
+
+  
 
   _chooseLocation() async {
     final chosenLocation = await Navigator.push<String>(
@@ -114,6 +119,8 @@ class _MyWidgetState extends State<WeatherPage> {
     }
   }
 
+
+
   String getCurrentNepaliDateTime() {
     NepaliDateTime dateTime = NepaliDateTime.now();
     NepaliDateFormat dateFormat = NepaliDateFormat('yyyy-MM-dd HH:mm:ss');
@@ -121,7 +128,7 @@ class _MyWidgetState extends State<WeatherPage> {
 
     NepaliDateTime convertedDate = NepaliDateTime.parse(nepaliDateString);
 
-    NepaliDateFormat displayFormat = NepaliDateFormat('EEE, MMMM d, yyyy G.');
+    NepaliDateFormat displayFormat = NepaliDateFormat('EE, MMMM d, yyyy G.');
 
     String formattedDate = displayFormat.format(convertedDate);
 
@@ -172,7 +179,30 @@ class _MyWidgetState extends State<WeatherPage> {
   }
 
   Future<void> _refreshWeather() async {
+    if (_isRefreshing) return; // Prevent multiple refreshes
+    if (_lastRefreshTime != null &&
+        DateTime.now().difference(_lastRefreshTime!) < const Duration(seconds: 10)) {
+      // If the last refresh was less than 10 seconds ago, display a message and return
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please wait a few seconds before refreshing again'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isRefreshing = true;
+    });
+
     await _fetchWeather();
+
+    setState(() {
+      _isRefreshing = false;
+      _lastRefreshTime = DateTime.now(); // Update the last refresh time
+    });
+
     // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -244,8 +274,26 @@ class _MyWidgetState extends State<WeatherPage> {
                   onPressed: () async {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) =>  UserAuthentication(),
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const UserProfile(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          var begin = const Offset(
+                              1.0, 0.0); // Slide from right to left
+                          var end = Offset.zero;
+                          var curve = Curves.ease;
+
+                          var tween = Tween(begin: begin, end: end)
+                              .chain(CurveTween(curve: curve));
+
+                          var offsetAnimation = animation.drive(tween);
+
+                          return SlideTransition(
+                            position: offsetAnimation,
+                            child: child,
+                          );
+                        },
                       ),
                     );
                   },
@@ -281,28 +329,151 @@ class _MyWidgetState extends State<WeatherPage> {
                     ),
                     const SizedBox(height: 0),
                     Text(
-                      'feeling ${(_weather?.weatherCondition ?? "")}',
+                      '...feeling ${(_weather?.weatherCondition ?? "")}',
                       style: const TextStyle(fontSize: 12),
                     ),
+                    const SizedBox(height: 5),
                     Text(
                       '${_weather?.temperature?.toStringAsFixed(0) ?? ""}°C',
                       style: const TextStyle(
-                        fontSize: 76,
-                        // fontWeight: FontWeight.bold,
+                        fontSize: 65,
+                        color: Color(0xFF00A1F2),
+                        fontWeight: FontWeight.bold, // Make the text bold
                       ),
                     ),
                   ],
                 ),
               ),
-              Column(
+              const SizedBox(height: 15),
+              // const Divider(
+              //   color: Color(0xFFf0f2f5), // Change divider color to white
+              //   thickness: 1.5,
+              //   height: 0,
+              //   indent: 16,
+              //   endIndent: 16,
+              // ),
+//          Padding(
+//   padding: const EdgeInsets.fromLTRB(16, 16, 16, 0), // Add left padding
+//   child: Center(
+//     child: Text(
+//       getCurrentNepaliDateTime(),
+//       style: const TextStyle(
+//         fontSize: 13,
+//         fontWeight: FontWeight.bold,
+//       ),
+//     ),
+//   ),
+// ),
+
+
+              // const SizedBox(height: 20),
+              const Divider(
+                color: Color(0xFFf0f2f5), // Change divider color to white
+                thickness: 1.5,
+                height: 0,
+                indent: 16,
+                endIndent: 16,
+              ),
+              Padding(
+  padding: const EdgeInsets.all(16.0),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(
+              'Featured Today',
+              style: TextStyle(
+                color: Color(0xFF00DC64), // Use #00dc64 color
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 3,
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Text(
+                getCurrentNepaliDateTime(),
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 16),
+      const Divider(
+        color: Color(0xFFf0f2f5), // Change divider color to white
+        thickness: 1.5,
+        height: 0,
+      ),
+      const SizedBox(height: 20),
+      const Text(
+        'Viral video falsely claims elephants sent from Nepal to Qatar...',
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+        ),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+      const SizedBox(height: 10),
+      Align(
+        alignment: Alignment.centerLeft,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.25,
+              child: Center(
+                child: Image.network(
+                  'https://scontent.fktm7-1.fna.fbcdn.net/v/t39.30808-6/438224087_792497989494984_8452363610187508156_n.jpg?_nc_cat=105&_nc_cb=99be929b-713f6db7&ccb=1-7&_nc_sid=5f2048&_nc_ohc=tjhi3YtuuBgQ7kNvgF-7oPl&_nc_ht=scontent.fktm7-1.fna&oh=00_AfDmgyklZ89MJQtX_ODHdm6af0SMPo1j_YAwITrD3BXiiA&oe=662FF5EF',
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const SizedBox(width: 15),
+            // Title and body
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 0),
                   Text(
-                    getCurrentNepaliDateTime(),
-                    style: const TextStyle(fontSize: 16),
+                    'A video of an elephant riding a truck is going viral on social media recently. In the video, the elephant is seen leaning on a tool and climbing onto the trolley of the truck. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, ex nec suscipit malesuada, turpis libero tristique libero, sit amet tincidunt ante nisi quis ex.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontStyle: FontStyle.italic, // Add italic font style
+                    ),
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Read more...',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
                 ],
               ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  ),
+),
+
             ],
           ),
         ),

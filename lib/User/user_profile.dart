@@ -1,116 +1,152 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class UserProfile extends StatelessWidget {
   const UserProfile({Key? key}) : super(key: key);
-
-  Future<void> _signOut(BuildContext context) async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.pop(context); // Navigate back to the previous page
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<User?>(
-      future: FirebaseAuth.instance.authStateChanges().first,
-      builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else {
-          if (snapshot.hasData && snapshot.data != null) {
-            final User user = snapshot.data!;
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text(
-                  'User Profile',
-                  style: TextStyle(
-                    color: Color(0xFF00A1F2),
-                  ),
-                ),
-                centerTitle: true,
-                automaticallyImplyLeading: false,
-                actions: [
-                  GestureDetector(
-                    onTap: () => _signOut(context),
-                    child: Container(
-                      padding: const EdgeInsets.all(0),
-                      child: const Icon(
-                        Icons.close,
-                        color: Color(0xFF00A1F2),
-                        size: 30,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                ],
-              ),
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: NetworkImage(
-                          user.photoURL ?? 'https://wallpapers.com/images/featured/naruto-profile-pictures-sa1tekghfajrr928.webp'),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      user.displayName ?? 'Username',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      user.email ?? 'Email Address',
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          } else {
-            // User is not signed in, navigate to authentication page
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const UserAuthentication(),
-              ),
-            );
-            return const SizedBox(); // Placeholder until navigation completes
-          }
-        }
-      },
-    );
-  }
-}
-
-class UserAuthentication extends StatelessWidget {
-  const UserAuthentication({Key? key}) : super(key: key);
-
-  // Implement the sign-in with Google logic here
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Authentication'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            // Implement the sign-in with Google logic
+        centerTitle: true, // Center the title
+        title: Text(
+          'User Profile',
+          style: TextStyle(
+            color: Color(0xFF00A1F2),
+            fontWeight: FontWeight.bold, // Make the text bold
+          ),
+        ),
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
           },
-          child: const Text('Sign in with Google'),
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            child: const Icon(
+              Icons.arrow_back,
+              color: Color(0xFF00A1F2),
+            ),
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 60),
+              CircleAvatar(
+  radius: 50,
+  backgroundImage: NetworkImage('https://wallpapers.com/images/hd/naruto-profile-pictures-sa1tekghfajrr928.jpg'),
+),
+
+              const SizedBox(height: 60),
+              Material(
+                color: Colors.transparent,
+                child: ListView(
+                  padding: EdgeInsets.zero, // Remove padding
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        // Handle onTap action for List 1
+                      },
+                      child: ListTile(
+                        leading: Icon(Icons.email),
+                        title: Text(
+                          'User Email',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20), // Add gap between List 1 and List 2
+                    InkWell(
+                      onTap: () {
+                        // Handle onTap action for List 2
+                      },
+                      child: ListTile(
+                        leading: Icon(Icons.notifications),
+                        title: Text(
+                          'Notification',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20), // Add gap between List 2 and List 3
+                    InkWell(
+                      onTap: () {
+                        // Handle onTap action for List 3
+                      },
+                      child: ListTile(
+                        leading: Icon(Icons.delete),
+                        title: Text(
+                          'Clear Cache',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20), // Add gap between List 3 and List 4
+                    InkWell(
+                      onTap: () {
+                        // Handle onTap action for List 4
+                      },
+                      child: ListTile(
+                        leading: Icon(Icons.privacy_tip),
+                        title: Text(
+                          'Privacy Policy',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20), // Add gap between List 4 and List 5
+                    InkWell(
+                      onTap: () {
+                        // Handle onTap action for List 5
+                      },
+                      child: ListTile(
+                        leading: Icon(Icons.info),
+                        title: Text(
+                          'About',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Divider(
+                      color: Color(0xFFf0f2f5), // Change divider color to white
+                      thickness: 1.5,
+                      height: 0,
+                      indent: 16,
+                      endIndent: 16,
+                    ),
+                    const SizedBox(height: 30),
+                    Center(
+                      child: Container(
+                        width: 150, // Set button width
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Handle logout action
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.red, // Button color
+                            onPrimary: Colors.white, // Text color
+                          ),
+                          child: Text(
+                            'Log Out',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 60),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-}
-
-void main() {
-  runApp(const MaterialApp(
-    home: UserProfile(),
-  ));
 }

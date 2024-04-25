@@ -34,8 +34,10 @@ class _LocationSelectionPageState extends State<LocationSelectionPage> {
       appBar: AppBar(
         title: const Text(
           'Select Location',
-          style: TextStyle(
+          
+           style: TextStyle(
             color: Color(0xFF00A1F2),
+            fontWeight: FontWeight.bold,
           ),
         ),
         leading: GestureDetector(

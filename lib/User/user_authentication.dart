@@ -53,12 +53,7 @@ class UserAuthentication extends StatelessWidget {
 
         // Navigate to the UserProfile page
         // ignore: use_build_context_synchronously
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const UserProfile(),
-          ),
-        );
+      
       }
     } catch (error) {
       print('Error signing in with Google: $error');
@@ -81,12 +76,7 @@ class UserAuthentication extends StatelessWidget {
       print('User registered with email: ${userCredential.user?.email}');
 
       // Navigate to the UserProfile page
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const UserProfile(),
-        ),
-      );
+      
     } catch (error) {
       print('Error registering user: $error');
     }
@@ -143,22 +133,6 @@ class UserAuthentication extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class UserProfile extends StatelessWidget {
-  const UserProfile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('User Profile'),
-      ),
-      body: const Center(
-        child: Text('User Profile'),
       ),
     );
   }
