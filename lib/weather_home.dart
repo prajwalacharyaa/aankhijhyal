@@ -371,119 +371,125 @@ class _MyWidgetState extends State<WeatherPage> {
                 endIndent: 16,
               ),
 
-            Padding(
+           Padding(
   padding: const EdgeInsets.all(16.0),
-  child: GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => FeaturedPostPage(
-            title: 'Viral video falsely claims elephants sent from Nepal to Qatar.',
-            description: 'A video of an elephant riding a truck is going viral on social media recently. In the video, the elephant is seen leaning on a tool and climbing onto the trolley of the truck. A video of an elephant riding a truck is going viral on social media recently. In the video, the elephant is seen leaning on a tool and climbing onto the trolley of the truck. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him. A video of an elephant riding a truck is going viral on social media recently. In the video, the elephant is seen leaning on a tool and climbing onto the trolley of the truck. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him. A video of an elephant riding a truck is going viral on social media recently. In the video, the elephant is seen leaning on a tool and climbing onto the trolley of the truck. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him.',
-            imageUrl: 'https://scontent.fktm7-1.fna.fbcdn.net/v/t39.30808-6/438224087_792497989494984_8452363610187508156_n.jpg?_nc_cat=105&_nc_cb=99be929b-713f6db7&ccb=1-7&_nc_sid=5f2048&_nc_ohc=tjhi3YtuuBgQ7kNvgF-7oPl&_nc_ht=scontent.fktm7-1.fna&oh=00_AfDmgyklZ89MJQtX_ODHdm6af0SMPo1j_YAwITrD3BXiiA&oe=662FF5EF',
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(
+              'Featured Today',
+              style: TextStyle(
+                color: Color(0xFF00DC64), // Use #00dc64 color
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
-        ),
-      );
-    },
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              flex: 2,
+          Expanded(
+            flex: 3,
+            child: Align(
+              alignment: Alignment.topRight,
               child: Text(
-                'Featured Today',
-                style: TextStyle(
-                  color: Color(0xFF00DC64), // Use #00dc64 color
-                  fontSize: 16,
+                getCurrentNepaliDateTime(),
+                style: const TextStyle(
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            Expanded(
-              flex: 3,
-              child: Align(
-                alignment: Alignment.topRight,
-                child: Text(
-                  getCurrentNepaliDateTime(),
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
+          ),
+        ],
+      ),
+      const SizedBox(height: 16),
+      const Divider(
+        color: Color(0xFFf0f2f5), // Change divider color to white
+        thickness: 1.5,
+        height: 0,
+      ),
+      const SizedBox(height: 20),
+      InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FeaturedPostPage(
+                title: 'Viral video falsely claims elephants sent from Nepal to Qatar.',
+                description: 'A video of an elephant riding a truck is going viral on social media recently. In the video, the elephant is seen leaning on a tool and climbing onto the trolley of the truck. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him.',
+                imageUrl: 'https://scontent.fktm7-1.fna.fbcdn.net/v/t39.30808-6/438224087_792497989494984_8452363610187508156_n.jpg?_nc_cat=105&_nc_cb=99be929b-713f6db7&ccb=1-7&_nc_sid=5f2048&_nc_ohc=tjhi3YtuuBgQ7kNvgF-7oPl&_nc_ht=scontent.fktm7-1.fna&oh=00_AfDmgyklZ89MJQtX_ODHdm6af0SMPo1j_YAwITrD3BXiiA&oe=662FF5EF',
+              ),
+            ),
+          );
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Viral video falsely claims elephants sent from Nepal to Qatar.',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Image
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.25,
+                    child: Center(
+                      child: Image.network(
+                        'https://scontent.fktm7-1.fna.fbcdn.net/v/t39.30808-6/438224087_792497989494984_8452363610187508156_n.jpg?_nc_cat=105&_nc_cb=99be929b-713f6db7&ccb=1-7&_nc_sid=5f2048&_nc_ohc=tjhi3YtuuBgQ7kNvgF-7oPl&_nc_ht=scontent.fktm7-1.fna&oh=00_AfDmgyklZ89MJQtX_ODHdm6af0SMPo1j_YAwITrD3BXiiA&oe=662FF5EF',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                ),
+                  const SizedBox(width: 15),
+                  // Title and body
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'A video of an elephant riding a truck is going viral on social media recently. In the video, the elephant is seen leaning on a tool and climbing onto the trolley of the truck. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him.',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontStyle: FontStyle.italic, // Add italic font style
+                          ),
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Read more...',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
         ),
-        const SizedBox(height: 16),
-        const Divider(
-          color: Color(0xFFf0f2f5), // Change divider color to white
-          thickness: 1.5,
-          height: 0,
-        ),
-        const SizedBox(height: 20),
-        const Text(
-          'Viral video falsely claims elephants sent from Nepal to Qatar.',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-          ),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const SizedBox(height: 10),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Image
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.25,
-                child: Center(
-                  child: Image.network(
-                    'https://scontent.fktm7-1.fna.fbcdn.net/v/t39.30808-6/438224087_792497989494984_8452363610187508156_n.jpg?_nc_cat=105&_nc_cb=99be929b-713f6db7&ccb=1-7&_nc_sid=5f2048&_nc_ohc=tjhi3YtuuBgQ7kNvgF-7oPl&_nc_ht=scontent.fktm7-1.fna&oh=00_AfDmgyklZ89MJQtX_ODHdm6af0SMPo1j_YAwITrD3BXiiA&oe=662FF5EF',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 15),
-              // Title and body
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'A video of an elephant riding a truck is going viral on social media recently. In the video, the elephant is seen leaning on a tool and climbing onto the trolley of the truck. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him.',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontStyle: FontStyle.italic, // Add italic font style
-                      ),
-                      maxLines: 4,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Read more...',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
+      ),
+    ],
   ),
 ),
+
 
 
 
