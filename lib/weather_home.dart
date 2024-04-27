@@ -10,6 +10,7 @@ import 'package:lottie/lottie.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+//weather home page
 class WeatherService {
   // ignore: constant_identifier_names
   static const String BASE_URL = 'https://api.openweathermap.org/data/2.5';
