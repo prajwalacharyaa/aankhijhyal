@@ -125,7 +125,7 @@ class _MyWidgetState extends State<WeatherPage> {
 
     NepaliDateTime convertedDate = NepaliDateTime.parse(nepaliDateString);
 
-    NepaliDateFormat displayFormat = NepaliDateFormat('EE, MMMM d, yyyy G.');
+    NepaliDateFormat displayFormat = NepaliDateFormat('MMMM d, yyyy G.');
 
     String formattedDate = displayFormat.format(convertedDate);
 
@@ -248,6 +248,7 @@ class _MyWidgetState extends State<WeatherPage> {
                     width: 24,
                     height: 24,
                     color: const Color(0xFF00A1F2),
+                    //  color: const Color(0xFF9c9c9c),
                   ),
                 ),
                 const SizedBox(width: 15),
@@ -260,7 +261,8 @@ class _MyWidgetState extends State<WeatherPage> {
                         style: TextStyle(
                           color: _isScrolled
                               ? Colors.black
-                              : const Color(0xFF00A1F2),
+                              // : const Color(0xFF00A1F2),
+                              : const Color(0xFF646464),
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),
@@ -298,6 +300,7 @@ class _MyWidgetState extends State<WeatherPage> {
                   icon: const Icon(
                     Icons.account_circle_outlined,
                     color: Color(0xFF00A1F2),
+                    //  color: Color(0xFF9c9c9c),
                   ),
                 ),
                 const SizedBox(width: 15),
@@ -314,10 +317,10 @@ class _MyWidgetState extends State<WeatherPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 15),
                 color: _isScrolled ? Colors.white : Colors.white,
               ),
-              Center(
+             Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -327,174 +330,188 @@ class _MyWidgetState extends State<WeatherPage> {
                     ),
                     const SizedBox(height: 0),
                     Text(
-                      '...feeling ${(_weather?.weatherCondition ?? "")}',
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      '${_weather?.temperature?.toStringAsFixed(0) ?? ""}°C',
+                      "${(_weather?.cityName ?? "")} is feeling ${(_weather?.weatherCondition ?? "")}.",
                       style: const TextStyle(
-                        fontSize: 65,
-                        color: Color(0xFF00A1F2),
-                        fontWeight: FontWeight.bold, // Make the text bold
+                        fontSize: 12,
+                        color: Color(0xFF9c9c9c),
+                      ),
+                    ),
+                    //  const SizedBox(height: 5),
+                    ShaderMask(
+                      shaderCallback: (Rect bounds) {
+                        return const LinearGradient(
+                          begin: Alignment(
+                              0.0, 1.2), // Start slightly below the center
+                          end: Alignment.topCenter,
+                          colors: [Color(0xFF0C5980), Color(0xFF9c9c9c)],
+                          stops: [0.0, 1.0],
+                        ).createShader(bounds);
+                      },
+                      child: Text(
+                        '${_weather?.temperature?.toStringAsFixed(0) ?? ""}°C',
+                        style: const TextStyle(
+                          fontSize: 85,
+                          fontWeight: FontWeight.bold,
+                          color: Colors
+                              .white, // Text color doesn't matter here, as it will be masked
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 15),
-              // const Divider(
-              //   color: Color(0xFFf0f2f5), // Change divider color to white
-              //   thickness: 1.5,
-              //   height: 0,
-              //   indent: 16,
-              //   endIndent: 16,
-              // ),
-//          Padding(
-//   padding: const EdgeInsets.fromLTRB(16, 16, 16, 0), // Add left padding
-//   child: Center(
-//     child: Text(
-//       getCurrentNepaliDateTime(),
-//       style: const TextStyle(
-//         fontSize: 13,
-//         fontWeight: FontWeight.bold,
-//       ),
-//     ),
-//   ),
-// ),
-
+              const SizedBox(height: 0),
+              Padding(
+                padding: const EdgeInsets.only(
+                    right: 16.0), // Add padding to the right
+                child: Container(
+                  alignment: Alignment.centerRight,
+                  child: Image.asset(
+                    'assets/images/princess style.png', // Change this to your image path
+                    width: 70,
+                    height: 70,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
               // const SizedBox(height: 20),
               const Divider(
-                color: Color(0xFFf0f2f5), // Change divider color to white
+                color: Color(0xFFF2F2F2), // Change divider color to white
                 thickness: 1.5,
                 height: 0,
                 indent: 16,
                 endIndent: 16,
               ),
 
-           Padding(
-  padding: const EdgeInsets.all(16.0),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Text(
-              'Featured Today',
-              style: TextStyle(
-                color: Color(0xFF00DC64), // Use #00dc64 color
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: Align(
-              alignment: Alignment.topRight,
-              child: Text(
-                getCurrentNepaliDateTime(),
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      const SizedBox(height: 16),
-      const Divider(
-        color: Color(0xFFf0f2f5), // Change divider color to white
-        thickness: 1.5,
-        height: 0,
-      ),
-      const SizedBox(height: 20),
-      InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => FeaturedPostPage(
-                title: 'Viral video falsely claims elephants sent from Nepal to Qatar.',
-                description: 'A video of an elephant riding a truck is going viral on social media recently. In the video, the elephant is seen leaning on a tool and climbing onto the trolley of the truck. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him.',
-                imageUrl: 'https://scontent.fktm7-1.fna.fbcdn.net/v/t39.30808-6/438224087_792497989494984_8452363610187508156_n.jpg?_nc_cat=105&_nc_cb=99be929b-713f6db7&ccb=1-7&_nc_sid=5f2048&_nc_ohc=tjhi3YtuuBgQ7kNvgF-7oPl&_nc_ht=scontent.fktm7-1.fna&oh=00_AfDmgyklZ89MJQtX_ODHdm6af0SMPo1j_YAwITrD3BXiiA&oe=662FF5EF',
-              ),
-            ),
-          );
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Viral video falsely claims elephants sent from Nepal to Qatar.',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 10),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Image
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    child: Center(
-                      child: Image.network(
-                        'https://scontent.fktm7-1.fna.fbcdn.net/v/t39.30808-6/438224087_792497989494984_8452363610187508156_n.jpg?_nc_cat=105&_nc_cb=99be929b-713f6db7&ccb=1-7&_nc_sid=5f2048&_nc_ohc=tjhi3YtuuBgQ7kNvgF-7oPl&_nc_ht=scontent.fktm7-1.fna&oh=00_AfDmgyklZ89MJQtX_ODHdm6af0SMPo1j_YAwITrD3BXiiA&oe=662FF5EF',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-                  // Title and body
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              Padding(
+                padding:
+                    const EdgeInsets.only(top: 8.0, left: 12.0, right: 12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        Text(
-                          'A video of an elephant riding a truck is going viral on social media recently. In the video, the elephant is seen leaning on a tool and climbing onto the trolley of the truck. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him.',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontStyle: FontStyle.italic, // Add italic font style
+                        const Expanded(
+                          flex: 2,
+                          child: Text(
+                            'Aajko Vishestha',
+                            style: TextStyle(
+                              //color:Color(0xFF0C5980), // Use #00dc64 color (0xFFFFBF00)
+                              color: Color(0xFF7C7C7C),
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          maxLines: 4,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Read more...',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue,
-                            decoration: TextDecoration.underline,
+                        Expanded(
+                          flex: 3,
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: Text(
+                              getCurrentNepaliDateTime(),
+                              style: const TextStyle(
+                                fontSize: 15,
+                                color: Color(0xFF7C7C7C), //
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    const Divider(
+                      color: Color(0xFFF2F2F2), // Change divider color to white
+                      thickness: 1.5,
+                      height: 0,
+                    ),
+                    const SizedBox(height: 20),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const FeaturedPostPage(
+                              title:
+                                  'Viral video falsely claims elephants sent from Nepal to Qatar.',
+                              description:
+                                  'A video of an elephant riding a truck is going viral on social media recently. In the video, the elephant is seen leaning on a tool and climbing onto the trolley of the truck. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him.',
+                              imageUrl:
+                                  'https://scontent.fktm7-1.fna.fbcdn.net/v/t39.30808-6/438224087_792497989494984_8452363610187508156_n.jpg?_nc_cat=105&_nc_cb=99be929b-713f6db7&ccb=1-7&_nc_sid=5f2048&_nc_ohc=tjhi3YtuuBgQ7kNvgF-7oPl&_nc_ht=scontent.fktm7-1.fna&oh=00_AfDmgyklZ89MJQtX_ODHdm6af0SMPo1j_YAwITrD3BXiiA&oe=662FF5EF',
+                            ),
+                          ),
+                        );
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Viral video falsely claims elephants sent from Nepal to Qatar...',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Color(0xFF0C5980),
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Image//asuka
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.25,
+                                  child: Center(
+                                    child: Image.network(
+                                      'https://scontent.fktm7-1.fna.fbcdn.net/v/t39.30808-6/438224087_792497989494984_8452363610187508156_n.jpg?_nc_cat=105&_nc_cb=99be929b-713f6db7&ccb=1-7&_nc_sid=5f2048&_nc_ohc=tjhi3YtuuBgQ7kNvgF-7oPl&_nc_ht=scontent.fktm7-1.fna&oh=00_AfDmgyklZ89MJQtX_ODHdm6af0SMPo1j_YAwITrD3BXiiA&oe=662FF5EF',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 15),
+                                // Title and body
+                                const Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'A video of an elephant riding a truck is going viral on social media recently. In the video, the elephant is seen leaning on a tool and climbing onto the trolley of the truck. Many social media users are sharing this video saying that this is the elephant that is going to be sent from Nepal to Qatar. However, it is not true. Misinformation is being spread on social media that the Emir of Qatar, Sheikh Tamim bin Hamad Al Thani, who came to Kathmandu on Tuesday, returned home on Wednesday and an elephant was also sent along with him.',
+                                        style: TextStyle(
+                                          color: Color(0xFF7C7C7C),
+                                          fontSize: 13,
+                                          fontStyle: FontStyle
+                                              .italic, // Add italic font style
+                                        ),
+                                        maxLines: 4,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      SizedBox(height: 4),
+                                      Text(
+                                        'Read more...',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF0C5980),
+                                          decoration: TextDecoration.underline,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
-    ],
-  ),
-),
-
-
-
-
-
             ],
           ),
         ),
