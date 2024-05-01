@@ -11,6 +11,7 @@ import 'package:nepali_utils/nepali_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 //weather home page
+//need more improvements in home page T_T
 class WeatherService {
   // ignore: constant_identifier_names
   static const String BASE_URL = 'https://api.openweathermap.org/data/2.5';
@@ -363,11 +364,11 @@ class _MyWidgetState extends State<WeatherPage> {
               const SizedBox(height: 0),
               Padding(
                 padding: const EdgeInsets.only(
-                    right: 16.0), // Add padding to the right
+                    right: 16.0), // To add padding to right
                 child: Container(
                   alignment: Alignment.centerRight,
                   child: Image.asset(
-                    'assets/images/princess style.png', // Change this to your image path
+                    'assets/images/princess style.png', // image path
                     width: 70,
                     height: 70,
                     fit: BoxFit.cover,
@@ -376,7 +377,7 @@ class _MyWidgetState extends State<WeatherPage> {
               ),
               // const SizedBox(height: 20),
               const Divider(
-                color: Color(0xFFF2F2F2), // Change divider color to white
+                color: Color(0xFFF2F2F2), // Change divider color to white just reference for replacement
                 thickness: 1.5,
                 height: 0,
                 indent: 16,
