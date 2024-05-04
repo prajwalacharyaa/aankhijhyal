@@ -11,6 +11,8 @@ import 'package:nepali_utils/nepali_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 //weather home page
+//new updates
+//few modification
 //need more improvements in home page T_T
 class WeatherService {
   // ignore: constant_identifier_names
