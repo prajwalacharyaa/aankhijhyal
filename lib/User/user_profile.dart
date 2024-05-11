@@ -12,7 +12,7 @@ class UserProfile extends StatelessWidget {
           'User Profile',
           style: TextStyle(
             color: Color(0xFF00A1F2),
-            fontWeight: FontWeight.bold, // Make the text bold
+            fontWeight: FontWeight.bold, // Make the text bold for the user profile
           ),
         ),
         leading: GestureDetector(
