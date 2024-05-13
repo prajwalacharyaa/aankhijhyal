@@ -8,6 +8,7 @@ class UserProfile extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true, // Center the title
+        //moreupdates on suer profile
         title: Text(
           'User Profile',
           style: TextStyle(
