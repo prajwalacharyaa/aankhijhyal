@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+//this needs more changes and firebase updates
 
 class UserProfile extends StatelessWidget {
   const UserProfile({Key? key}) : super(key: key);
@@ -8,7 +9,6 @@ class UserProfile extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true, // Center the title
-        //moreupdates on suer profile
         title: Text(
           'User Profile',
           style: TextStyle(
