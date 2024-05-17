@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 //this needs more changes and firebase updates
-//adding new changes in user_profile
 class UserProfile extends StatelessWidget {
   const UserProfile({Key? key}) : super(key: key);
 
