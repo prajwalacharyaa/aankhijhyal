@@ -5,7 +5,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure that plugins are initialized
   runApp(const MyApp());
 }
-
+//maindart
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
