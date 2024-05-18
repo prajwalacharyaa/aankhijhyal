@@ -1,6 +1,6 @@
 import 'package:aankhijhyal/weather_home.dart';
 import 'package:flutter/material.dart';
-
+//changes in main
 void main() {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure that plugins are initialized
   runApp(const MyApp());
